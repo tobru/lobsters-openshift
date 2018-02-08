@@ -1,5 +1,9 @@
-# Enhanced Ruby builder for Lobsters
+# Lobsters on OpenShift
 
-The Dockerfile contains additional packages for building a
-[Lobsters](https://github.com/lobsters/lobsters/) image with s2i
-on OpenShift.
+WIP
+
+[Lobsters](https://github.com/lobsters/lobsters/)
+
+docker-compose exec lobsters rake db:schema:load
+docker-compose exec lobsters rake db:seed
+docker-compose run lobsters rake secret

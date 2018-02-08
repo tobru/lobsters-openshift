@@ -1,0 +1,16 @@
+version: '3'
+services:
+  lobsters:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - 'variables.env'
+    ports:
+      - 3000:3000
+    # mimic the behaviour of OpenShift by assigning an arbitrary uid
+    user: '1000110000:0'
+  mariadb:
+    image: mariadb:latest
+    env_file:
+      - 'variables.env'
