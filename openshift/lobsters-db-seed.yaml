@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lobsters-db-seed
+spec:
+  template:
+    metadata:
+      name: lobsters-db-seed
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: lobsters
+          image: docker.io/tobru/lobsters:latest
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: database-root-password
+                  name: mariadb
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database-name
+                  name: mariadb
+          command:
+            - "rake"
+            - "db:seed"
