@@ -8,6 +8,10 @@ if ! whoami &> /dev/null; then
 fi
 
 # Pre-compile assets
+echo "[startup] running db migrations"
+rake db:migrate
+
+# Pre-compile assets
 echo "[startup] pre-compiling assets"
 rake assets:precompile
 
