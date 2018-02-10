@@ -18,6 +18,9 @@ parameters:
 - name: IMAGE
   displayName: Docker image to deploy
   value: docker.io/tobru/lobsters:latest
+- name: SMTP_HOST
+  displayName: SMTP to send mails to
+  value: localhost
 labels:
   redis: master
 objects:
@@ -56,6 +59,8 @@ objects:
             value: ${DOMAIN}
           - name: APP_TITLE
             value: ${APP_TITLE}
+          - name: SMTP_HOST
+            value: ${SMTP_HOST}
           - name: MYSQL_DATABASE
             value: lobsters
           - name: MYSQL_USER
