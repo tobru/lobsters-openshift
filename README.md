@@ -4,6 +4,19 @@ WIP
 
 [Lobsters](https://github.com/lobsters/lobsters/)
 
-docker-compose exec lobsters rake db:schema:load
-docker-compose exec lobsters rake db:seed
-docker-compose run lobsters rake secret
+```
+PROJECT=lobsters
+oc -n openshift process mariadb-persistent -p MYSQL_DATABASE=lobsters | oc -n $PROJECT create -f -
+oc -n $PROJECT apply -f openshift/job-db-initialize.yaml
+oc process -f openshift/template.yaml | oc -n $PROJECT apply -f -
+oc -n $PROJECT expose service lobsters
+```
+
+## TODO
+
+* OpenShift deployment
+  * APB
+* Proper README
+* Backup
+
+

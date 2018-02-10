@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: lobsters-db-seed
+  name: lobsters-db-initialize
 spec:
   template:
     metadata:
-      name: lobsters-db-seed
+      name: lobsters-db-initialize
     spec:
-      restartPolicy: OnFailure
+      restartPolicy: Never
       containers:
         - name: lobsters
           image: docker.io/tobru/lobsters:latest
@@ -26,5 +26,6 @@ spec:
                   key: database-name
                   name: mariadb
           command:
-            - "rake"
-            - "db:seed"
+            - sh
+            - -c
+            - "rake db:schema:load && rake db:seed"

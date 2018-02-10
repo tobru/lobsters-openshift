@@ -1,0 +1,42 @@
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: lobsters-cron-twitter
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            parent: lobsters-cron-twitter
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: lobsters-cron-twitter
+              image: docker.io/tobru/lobsters:latest
+              imagePullPolicy: Always
+              env:
+                - name: MYSQL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: database-user
+                      name: mariadb
+                - name: MYSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: database-password
+                      name: mariadb
+                - name: MYSQL_DATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      key: database-name
+                      name: mariadb
+              command:
+                - "bundle"
+                - "exec"
+                - "ruby"
+                - "script/post_to_twitter"
