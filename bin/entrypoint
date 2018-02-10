@@ -1,7 +1,16 @@
 #!/bin/sh
+
+# Assign uid a name
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
     echo "lobsters:x:$(id -u):0:lobsters user:/opt/lobsters:/sbin/nologin" >> /etc/passwd
   fi
 fi
+
+# Pre-compile assets
+echo "[startup] pre-compiling assets"
+rake assets:precompile
+
+# Execute app
+echo "[startup] starting app"
 exec "$@"

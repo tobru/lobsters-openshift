@@ -12,6 +12,14 @@ oc process -f openshift/template.yaml | oc -n $PROJECT apply -f -
 oc -n $PROJECT expose service lobsters
 ```
 
+## Custom CSS
+
+```
+oc -n $PROJECT create configmap lobsters-custom --from-file custom.css
+oc -n $PROJECT volume dc/lobsters --add --name=lobsters-custom -t configmap \
+  -m /opt/lobsters/app/assets/stylesheets/local --configmap-name=lobsters-custom
+```
+
 ## TODO
 
 * OpenShift deployment

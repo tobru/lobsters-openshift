@@ -41,7 +41,7 @@ RUN cd /opt && \
 # from now on - do everything in /opt/lobsters
 WORKDIR /opt/lobsters
 
-ADD bin/uid_entrypoint /usr/local/bin/uid_entrypoint
+ADD bin/entrypoint /usr/local/bin/entrypoint
 ADD appcfg/database.yml /opt/lobsters/config/database.yml
 ADD appcfg/env_openshift.rb /opt/lobsters/config/environments/openshift.rb
 ADD appcfg/initializers_production.rb /opt/lobsters/config/initializers/openshift.rb
@@ -49,9 +49,7 @@ ADD appcfg/initializers_production.rb /opt/lobsters/config/initializers/openshif
 # OpenShift / Docker specific configuration
 RUN \
   # Configure secret_key_base via environment vars
-  echo "Lobsters::Application.config.secret_key_base = ENV['SECRET_KEY_BASE']" > /opt/lobsters/config/initializers/secret_token.rb && \
-  # Pre-Compile assets
-  rake assets:precompile
+  echo "Lobsters::Application.config.secret_key_base = ENV['SECRET_KEY_BASE']" > /opt/lobsters/config/initializers/secret_token.rb
 
 # Fix permissions for OpenShift
 USER root
@@ -59,5 +57,5 @@ RUN chmod -R g=u /opt/lobsters
 USER 1001
 
 EXPOSE 3000
-ENTRYPOINT [ "uid_entrypoint" ]
+ENTRYPOINT [ "entrypoint" ]
 CMD ["rails", "server"]
