@@ -1,5 +1,7 @@
 FROM ruby:2.5-alpine
 
+ARG GITHUB_NAMESPACE=lobsters/lobsters
+
 # Install static prerequisits
 RUN apk add --no-cache \
       wget \
@@ -30,7 +32,7 @@ ENV LOBSTERS_HASH=33b333c \
 
 # Install lobsters
 RUN cd /opt && \
-    wget -q https://github.com/lobsters/lobsters/archive/${LOBSTERS_HASH}.zip >/dev/null && \
+    wget -q https://github.com/${GITHUB_NAMESPACE}/archive/${LOBSTERS_HASH}.zip >/dev/null && \
     unzip ${LOBSTERS_HASH}.zip >/dev/null && rm ${LOBSTERS_HASH}.zip && \
     cd lobsters-* && cp -r . /opt/lobsters && cd /opt && rm -rf lobsters-* && \
     cd /opt/lobsters && \
