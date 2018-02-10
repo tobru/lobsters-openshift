@@ -21,10 +21,7 @@ spec:
                   key: database-root-password
                   name: mariadb
             - name: MYSQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  key: database-name
-                  name: mariadb
+              value: lobsters
           command:
             - sh
             - -c

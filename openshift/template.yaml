@@ -56,15 +56,12 @@ objects:
             value: ${DOMAIN}
           - name: APP_TITLE
             value: ${APP_TITLE}
+          - name: MYSQL_DATABASE
+            value: lobsters
           - name: MYSQL_USER
             valueFrom:
               secretKeyRef:
                 key: database-user
-                name: mariadb
-          - name: MYSQL_DATABASE
-            valueFrom:
-              secretKeyRef:
-                key: database-name
                 name: mariadb
           - name: MYSQL_PASSWORD
             valueFrom:

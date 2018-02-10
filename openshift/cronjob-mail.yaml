@@ -31,10 +31,7 @@ spec:
                       key: database-password
                       name: mariadb
                 - name: MYSQL_DATABASE
-                  valueFrom:
-                    secretKeyRef:
-                      key: database-name
-                      name: mariadb
+                  value: lobsters
               command:
                 - "bundle"
                 - "exec"
