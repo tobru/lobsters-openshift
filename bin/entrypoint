@@ -10,7 +10,7 @@ fi
 # Copy customizations
 if [ -d /opt/lobsters_views ]; then
   echo "[startup] copying lobsters views"
-  cp -r /opt/lobsters_views/* /opt/lobsters/app/views/home/
+  cp -r -L /opt/lobsters_views/* /opt/lobsters/app/views/home/
 fi
 
 # Pre-compile assets
