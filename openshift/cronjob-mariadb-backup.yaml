@@ -36,7 +36,7 @@ objects:
                   - -c
                   - DATE=$(date +%Y%m%d-%H-%M-%S); ls -rdt1 /var/lib/mysql/data/dump-* |
                     head -n -$BACKUP_KEEP | xargs rm; mysqldump --single-transaction -u$MYSQL_USER
-                    -p$MYSQL_PASSWORD -hmariadb nextcloud > /var/lib/mysql/data/dump-$DATE.sql;
+                    -p$MYSQL_PASSWORD -hmariadb $MYSQL_DATABASE > /var/lib/mysql/data/dump-$DATE.sql;
                     echo "Backup complete"; echo; echo "To restore, use:"; echo "~# mysql
                     -u\$MYSQL_USER -p\$MYSQL_PASSWORD -hmariadb nextcloud < $DATE.sql";
                     sleep 60
