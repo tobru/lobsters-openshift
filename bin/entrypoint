@@ -7,6 +7,12 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
+# Copy customizations
+if [ -d /opt/lobsters_views ]; then
+  echo "[startup] copying lobsters views"
+  cp -r /opt/lobsters_views/* /opt/lobsters/app/views/home/
+fi
+
 # Pre-compile assets
 echo "[startup] running db migrations"
 rake db:migrate
