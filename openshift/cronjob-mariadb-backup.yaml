@@ -54,7 +54,7 @@ objects:
                       key: database-password
                       name: mariadb
                 - name: MYSQL_DATABASE
-                  value: nextcloud
+                  value: lobsters
                 volumeMounts:
                   - name: mariadb-data
                     mountPath: /var/lib/mysql/data
