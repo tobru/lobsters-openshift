@@ -13,15 +13,7 @@ RUN apk add --no-cache \
       mariadb-dev \
       # dependencies for runtime
       nodejs \
-      yarn \
-      && \
-    # Permissions for OpenShift compatibility
-    mkdir /opt && \
-    chown -R 1001:0 /opt && chmod -R g=u /opt && \
-    chmod g=u /etc/passwd
-
-# from now on - do everything unprivileged
-USER 1001
+      yarn
 
 # Define lobsters "version"
 # Note: There is no official release, so we stick to a Git hash
@@ -31,33 +23,39 @@ ENV LOBSTERS_HASH=33b333c \
     HOME=/opt/lobsters
 
 # Install lobsters
-RUN cd /opt && \
-    wget -q https://github.com/${GITHUB_NAMESPACE}/archive/${LOBSTERS_HASH}.zip >/dev/null && \
-    unzip ${LOBSTERS_HASH}.zip >/dev/null && rm ${LOBSTERS_HASH}.zip && \
+RUN mkdir /opt && cd /opt && \
+    wget -q https://github.com/"${GITHUB_NAMESPACE}"/archive/"${LOBSTERS_HASH}".zip >/dev/null && \
+    unzip "${LOBSTERS_HASH}".zip >/dev/null && rm "${LOBSTERS_HASH}".zip && \
     cd lobsters-* && cp -r . /opt/lobsters && cd /opt && rm -rf lobsters-* && \
     cd /opt/lobsters && \
     # Adding missing Gem
     echo "gem \"tzinfo-data\"" >> Gemfile && \
+    # Install dependencies
     bundle install --without="test development"
 
-# from now on - do everything in /opt/lobsters
+# Set working directoriy
 WORKDIR /opt/lobsters
 
-ADD bin/entrypoint /usr/local/bin/entrypoint
-ADD appcfg/database.yml /opt/lobsters/config/database.yml
-ADD appcfg/env_openshift.rb /opt/lobsters/config/environments/openshift.rb
-ADD appcfg/initializers_production.rb /opt/lobsters/config/initializers/openshift.rb
+# Copy OpenShift / Docker specific files into image
+COPY bin/entrypoint /usr/local/bin/entrypoint
+COPY appcfg/database.yml /opt/lobsters/config/database.yml
+COPY appcfg/env_openshift.rb /opt/lobsters/config/environments/openshift.rb
+COPY appcfg/initializers_production.rb /opt/lobsters/config/initializers/openshift.rb
 
 # OpenShift / Docker specific configuration
 RUN \
   # Configure secret_key_base via environment vars
-  echo "Lobsters::Application.config.secret_key_base = ENV['SECRET_KEY_BASE']" > /opt/lobsters/config/initializers/secret_token.rb
+  echo "Lobsters::Application.config.secret_key_base = ENV['SECRET_KEY_BASE']" \
+    > /opt/lobsters/config/initializers/secret_token.rb
 
-# Fix permissions for OpenShift
-USER root
-RUN chmod -R g=u /opt/lobsters
+# Filesystem permissions for OpenShift
+# https://docs.openshift.com/container-platform/latest/creating_images/guidelines.html#openshift-specific-guidelines
+RUN chown -R 1001:0 /opt && \
+    chmod -R g=u /opt && \
+    chmod g=u /etc/passwd
+
+# Prepare runtime
 USER 1001
-
 EXPOSE 3000
 ENTRYPOINT [ "entrypoint" ]
 CMD ["rails", "server"]
